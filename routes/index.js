@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/version', (req, res, next) => {
-  res.status(200).json({ version: '1.0' });
+  res.status(200).json({ version: '1.1' });
 });
 
 module.exports = router;
