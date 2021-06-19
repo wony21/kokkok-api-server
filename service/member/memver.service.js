@@ -42,7 +42,9 @@ exports.getExistUser = async(userId) => {
 exports.addMember = async (member) => {
     try {
         // 변수 바인딩
-        const { userId, password, email, name, sex, birth, phone, address1, address2, postNumber } = member;
+        const { 
+            userId, password, email, name, sex, birth, phone, address1, address2, postNumber 
+        } = member;
         // 입력값 검사
         if (!userId) {
             throw Error('사용자 아이디를 입력 하세요.');

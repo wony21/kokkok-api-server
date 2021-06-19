@@ -40,9 +40,6 @@ const MemberSchema = new mongoose.Schema({
 /* 트리거 */
 MemberSchema.pre('save', function(next){
     var member = this;
-
-    
-
     if (member.isModified()) {
         console.log('modified member');
         member.password = util.hash_password(member.password);

@@ -6,4 +6,8 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/version', (req, res, next) => {
+  res.status(200).json({ version: '1.0' });
+});
+
 module.exports = router;
