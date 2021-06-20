@@ -19,6 +19,9 @@ router.get('/logout', function (req, res) {
 router.get('/success', async (req, res) => {
     var user = req.session.passport.user;
     console.log(user);
+    if (user.id) {
+        user['userId'] = user.id;
+    }
     res.render('login/login-success', {user: user});
 });
 
