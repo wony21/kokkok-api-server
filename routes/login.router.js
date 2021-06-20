@@ -3,7 +3,13 @@ var router = express.Router();
 var passport = require('passport');
 
 // 구글 로그인 구현
-router.get('/google', passport.authenticate('google', { scope: ['profile']}));
+router.get('/google', passport.authenticate('google', {scope: ['profile']}));
+// 네이버 로그인 구현
+router.get('/naver', passport.authenticate('naver'));
+// 카카오 로그인 구현
+router.get('/kakao', passport.authenticate('kakao'));
+// Facebook 로그인 구현
+router.get('/facebook', passport.authenticate('facebook'));
 
 // 로그아웃 처리
 router.get('/logout', function (req, res) {
@@ -50,6 +56,30 @@ router.get('/google/callback',
     (req, res) => {
         console.log('-- google callback --');
         // 로그인이 되어 콜백이 되면 페이지로 전환
+        res.redirect('/login/success');
+    }
+);
+// 네이버 Callback 구현
+router.get('/naver/callback', 
+    passport.authenticate('naver', {failureRedirect: '/login/login-failed'}),
+    (req, res) => {
+        console.log('-- naver callback --');
+        res.redirect('/login/success');
+    }
+);
+// 카카오 Callback 구현
+router.get('/kakao/callback', 
+    passport.authenticate('kakao', {failureRedirect: '/login/login-failed'}),
+    (req, res) => {
+        console.log('-- kakao callback --');
+        res.redirect('/login/success');
+    }
+);
+// Facebook Callback 구현
+router.get('/facebook/callback', 
+    passport.authenticate('facebook', {failureRedirect: '/login/login-failed'}),
+    (req, res) => {
+        console.log('-- facebook callback --');
         res.redirect('/login/success');
     }
 );

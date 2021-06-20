@@ -1,6 +1,9 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
+const NaverStrategy = require('passport-naver').Strategy;
+const KakaoStrategy = require('passport-kakao').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 const LoginService = require('../service/login/login.service');
 
 module.exports = () => {
@@ -15,7 +18,7 @@ module.exports = () => {
         console.log('deserializeUser');
         done(null, user);
     });
-    
+    // Local 인증 구현
     passport.use(new LocalStrategy({
         usernameField: 'userId',
         passwordField: 'password',
@@ -35,7 +38,7 @@ module.exports = () => {
             }
         }
     ));
-
+    // Google 인증 구현
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_SECRET,
@@ -46,6 +49,51 @@ module.exports = () => {
         } = profile;
         try {
             console.log('-- google login --');
+            console.log(profile);
+            console.log(`accessToken: ${accessToken}`);
+            return done(null, profile);
+        } catch (e) {
+            return done(e);
+        }
+    }));
+    // 네이버 인증 구현
+    passport.use(new NaverStrategy({
+        clientID: process.env.NAVER_CLIENT_ID,
+        clientSecret: process.env.NAVER_SECRET,
+        callbackURL: process.env.NAVER_CALLBACK_URL
+    }, function(accessToken, refreshToken, profile, done){
+        try {
+            console.log(profile);
+            console.log(`naver accessToken: ${accessToken}`);
+            return done(null, profile);
+        } catch (e) {
+            return done(e);   
+        }
+    }));
+    // 카카오 인증 구현
+    passport.use(new KakaoStrategy({
+        clientID: process.env.KAKAO_RESTAPI_KEY,
+        callbackURL: process.env.KAKAO_CALLBACK_URL
+    }, function(accessToken, refreshToken, profile, done){
+        try {
+            console.log(profile);
+            console.log(`kakao accessToken: ${accessToken}`);
+            return done(null, profile);
+        } catch (e) {
+            return done(e);   
+        }
+    }));
+    // 페이스북 인증 구현
+    passport.use(new FacebookStrategy({
+        clientID: process.env.FACEBOOK_CLIENT_ID,
+        clientSecret: process.env.FACEBOOK_SECRET,
+        callbackURL: process.env.FACEBOOK_CALLBACK_URL
+    }, function(accessToken, refreshToken, profile, done){
+        const {
+            _json: {id, avatar_url, login: name, email}
+        } = profile;
+        try {
+            console.log('-- facebook login --');
             console.log(profile);
             console.log(`accessToken: ${accessToken}`);
             return done(null, profile);
