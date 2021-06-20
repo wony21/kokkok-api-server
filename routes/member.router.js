@@ -7,6 +7,10 @@ var MemberController = require('../controller/member.controller');
  */
 router.get('/list', MemberController.getMembers);
 /**
+ * 회원 아이디 존재 여부 Router
+ */
+router.get('/check', MemberController.checkUserId);
+/**
  * 회원 가입 Router
  */
 router.put('/add', MemberController.addMember);

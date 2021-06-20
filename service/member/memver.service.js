@@ -16,6 +16,26 @@ exports.getMembers = async () => {
 }
 
 /**
+ * 회원 인증 - 기본
+ * @param {회원 아이디}} userId 
+ * @param {비밀번호} password 
+ * @returns 
+ */
+ exports.authentication = async (userId, password) => {
+    try {
+        var whereFilter = `this.userId.toUpperCase() == '${userId.toUpperCase()}'`;
+        var member = await Member.findOne({ $where : whereFilter });
+        if (member) {
+            return member.comparePassword(password);
+        } else {
+            throw Error('존재하지 않은 회원 입니다.');
+        }
+    } catch (e) {
+        throw Error(e.message);
+    }
+}
+
+/**
  * 회원 아이디 존재 여부 확인
  * @param {회원가입 아이디} userId 
  * @returns 
@@ -23,7 +43,8 @@ exports.getMembers = async () => {
 exports.getExistUser = async(userId) => {
     try {
         // 사용자 존재 여부 
-        var member = await Member.findOne({userId: userId});
+        var whereFilter = `this.userId.toUpperCase() == '${userId.toUpperCase()}'`;
+        var member = await Member.findOne({ $where : whereFilter });
         if (member) {
             return true;
         } else {
@@ -35,11 +56,27 @@ exports.getExistUser = async(userId) => {
 }
 
 /**
+ * 회원 아이디로 회원 정보 찾기
+ * @param {회원 아이디} userId 
+ * @returns 
+ */
+exports.getUserFromId = async(userId) => {
+    try {
+        var whereFilter = `this.userId.toUpperCase() == '${userId.toUpperCase()}'`;
+        var member = await Member.findOne({ $where : whereFilter });
+        return member;
+    } catch (e) {
+        throw Error(e.message);
+    }
+
+}
+
+/**
  * 회원 추가
  * @param {회원가입정보} member 
  * @returns 
  */
-exports.addMember = async (member) => {
+ exports.addMember = async (member) => {
     try {
         // 변수 바인딩
         const { 
@@ -105,19 +142,55 @@ exports.addMember = async (member) => {
 }
 
 /**
- * 회원 인증 - 기본
- * @param {회원 아이디}} userId 
- * @param {비밀번호} password 
+ * 회원 정보 수정 하기
+ * @param {수정할 회원} member 
  * @returns 
  */
-exports.authentication = async (userId, password) => {
+exports.updateMember = async (member) => {
     try {
-        var member = await Member.findOne({ userId: userId });
-        if (member) {
-            return member.comparePassword(password);
-        } else {
-            throw Error('존재하지 않은 회원 입니다.');
+        // 변수 바인딩
+        const { 
+            userId, password, email, name, sex, birth, phone, address1, address2, postNumber, memberFg
+        } = member;
+        // 입력값 검사
+        if (!userId) {
+            throw Error('사용자 아이디를 입력 하세요.');
         }
+        if (!password) {
+            throw Error('비밀번호를 입력 하세요.');
+        }
+        if (!name) {
+            throw Error('이름을 입력 하세요.');
+        }
+        if (!email) {
+            throw Error('Email을 입력 하세요.');
+        }
+        // 존재하는 아이디 확인
+        var exist = await this.getExistUser(userId);
+        if (exist) {
+            throw Error('사용 중인 아이디 이므로 사용 할 수 없습니다.');
+        }
+
+        await Member.findOneAndUpdate(
+            { $where : `this.userId.toUpperCase() == '${userId.toUpperCase()}'`},
+            { 
+                password: password,
+                email: email,
+                name: name,
+                sex: sex,
+                birth: birth,
+                phone: phone,
+                address1: address1,
+                address2: address2,
+                postNumber: postNumber,
+                memberFg: memberFg,
+                updateAt: new Date(),
+                updateUser: null
+            }
+        );
+        // 신규 Member Object 반환
+        return newMember;
+
     } catch (e) {
         throw Error(e.message);
     }

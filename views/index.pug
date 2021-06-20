@@ -2,4 +2,14 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
+  form(action="/login/request", method="post") 
+    #userId 
+      label(for="userId") 아이디 
+      input(name="userId" type="text")
+    #password 
+      label(for="password" ) 비밀번호 
+      input(name="password" type="password")
+    #buttons 
+      button(type="submit") 로그인 
+    #buttons2 
+      button(type="button" onclick="location.href='http://localhost:25021/login/google'" ) GOOGLE 
