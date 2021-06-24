@@ -4,6 +4,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var cors = require('cors');
 var passport = require('passport');
 var session = require('express-session');
 var kokkokPassport = require('./authentication/kokkok-passport');
@@ -56,6 +57,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// cors 적용
+app.use(cors());
+
 
 console.log('init passport..');
 // 세션 활성화
@@ -67,11 +71,9 @@ kokkokPassport();               // passport custom 적용
 console.log('setting routers...');
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
-console.log('0');
-app.use(passportMiddleWare);  // 미들웨어 아래 부분 부터 인증검사 후 비인가사용자 로그인 페이지로 이동
-console.log('1');
-app.use('/users', usersRouter);
+// app.use(passportMiddleWare);  // 미들웨어 아래 부분 부터 인증검사 후 비인가사용자 로그인 페이지로 이동
 app.use('/members', memberRouter);
+app.use('/users', usersRouter);
 
 console.log('catch 404 and forward to error handler...');
 // catch 404 and forward to error handler

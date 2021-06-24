@@ -33,7 +33,9 @@ router.get('/success', async (req, res) => {
 
 // 로그인 실패 페이지
 router.get('/failed', async (req, res) => {
-    res.render('/login/login-failed');
+    // res.render('/login/login-failed');
+    console.log('로그인 인증 실패');
+    res.status(200).json({status: 401, message: '로그인 인증 실패', login: false});
 });
 
 // 로그인 처리 (passport 사용)
@@ -43,10 +45,8 @@ router.post(
     (req, res) => {
         // 로그인 성공
         var userInfo = req.session.passport.user;
-        const {userid, username} = userInfo;
-        console.log(`login success `);
-        console.log(userInfo);
-        res.redirect('/login/success');
+        console.log('passport login request is successed.');
+        res.status(200).json({status: 200, message: '로그인 인증 성공', login: true, userInfo: userInfo});
     }
 );
 
